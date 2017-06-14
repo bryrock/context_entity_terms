@@ -1,0 +1,6 @@
+name = Context Entity Terms
+description = Extend the Context Taxonomy Node Condition plugin (context_condition_node_taxonomy) to find terms referenced by entityreference.
+core = 7.x
+package = Context
+dependencies[] = entityreference
+files[] = context_entity_terms_condition_node_taxonomy.inc

@@ -1,0 +1,54 @@
+<?php
+/**
+ * @file
+ * Context Entity Terms file.
+ */
+
+/**
+ * Implements hook_context_plugins().
+ *
+ */
+function context_entity_terms_context_plugins() {
+  $plugins = array();
+  $plugins['context_entity_terms_condition_node_entity_taxonomy'] = array(
+    'handler' => array(
+      'path' => drupal_get_path('module', 'context_entity_terms') .'/plugins',
+      'file' => 'context_entity_terms_condition_node_entity_taxonomy.inc',
+      'class' => 'context_entity_terms_condition_node_entity_taxonomy',
+      'parent' => 'context_condition_node',
+    ),
+  );
+  return $plugins;
+}
+
+/**
+ * Implements hook_context_registry().
+ */
+function context_entity_terms_context_registry() {
+   $registry = array();
+
+  if (module_exists('taxonomy')) {
+    $registry['conditions']['node_entity_taxonomy'] = array(
+      'title' => t('Taxonomy (entity referenced)'),
+      'description' => t('Set this context when viewing a node with the selected entity referenced taxonomy terms.'),
+      'plugin' => 'context_entity_terms_condition_node_entity_taxonomy',
+    );
+  }
+  return $registry;
+}
+
+/**
+ * Implements hook_context_node_condition_alter().
+ *
+ * Alter/add a condition to a node-related event.
+ *
+ * @param $node
+ *   The node object.
+ * @param $op
+ *   The node-related operation: 'node', 'form', 'comment'.
+ */
+function context_entity_terms_context_node_condition_alter(&$node, $op) {
+  if ($plugin = context_get_plugin('condition', 'node_entity_taxonomy')) {
+    $plugin->execute($node, $op);
+  }
+}
